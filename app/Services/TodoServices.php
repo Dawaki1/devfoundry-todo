@@ -51,20 +51,19 @@ class TodoServices {
 		$userId = Auth::user()->id;
 		$todos = Todo::where('user_id', $userId)->get();
 
-		if ($todos->count() > 0) {
-			return array(
-				'status'  => 200,
-				'message' => "List of all todos",
-				'data'    => $todos
-			);
-
-		} else {
+		if ($todos->count() <= 0) {
 			return [
 				'status'  => 404,
 				'message' => "The  user does not have any todo item",
 				'data'    => null
 			];
+
 		}
+		return array(
+			'status'  => 200,
+			'message' => "List of all todos",
+			'data'    => $todos
+		);
 
 	}
 
@@ -179,6 +178,5 @@ class TodoServices {
 			);
 		}
 	}
-
 
 }
