@@ -41,23 +41,20 @@ class TodoController extends Controller {
 			'completed'   => 'required|boolean',
 		]);
 
-
-		if (!$validator->fails()) {
-
-			$todoService = new TodoServices();
-			$response = $todoService->create($request);
-			return response()->json([
-				'message' => $response['message'],
-				'data'    => $response['data']
-			], $response['status']);
-
-		} else {
+		if ($validator->fails()) {
 			return response()->json([
 				'status'  => 422,
 				'message' => 'Validation errors',
 				'data'    => $validator->errors(),
 			], 422);
 		}
+
+		$todoService = new TodoServices();
+		$response = $todoService->create($request);
+		return response()->json([
+			'message' => $response['message'],
+			'data'    => $response['data']
+		], $response['status']);
 	}
 
 	/**
@@ -65,21 +62,20 @@ class TodoController extends Controller {
 	 */
 	public function showTodo($id) {
 
-		if ($id) {
+		if (!$id) {
 
-			$todoService = new TodoServices();
-			$response = $todoService->getTodoById($id);
-			return response()->json([
-				'message' => $response['message'],
-				'data'    => $response['data']
-			], $response['status']);
-
-		} else {
 			return response()->json([
 				'status'  => 422,
 				'message' => 'The todo id must be provided',
 			], 422);
 		}
+
+		$todoService = new TodoServices();
+		$response = $todoService->getTodoById($id);
+		return response()->json([
+			'message' => $response['message'],
+			'data'    => $response['data']
+		], $response['status']);
 	}
 
 	/**
@@ -94,29 +90,26 @@ class TodoController extends Controller {
 	 */
 	public function updateTodo(Request $request, $id) {
 
-		$validator = Validator::make($request->all(),[
+		$validator = Validator::make($request->all(), [
 			'title'       => 'required|string',
 			'description' => 'nullable|string',
 			'dateline'    => 'nullable|date',
 			'completed'   => 'nullable|boolean',
 		]);
 
-		if (!$validator->fails()) {
-
-			$todoService = new TodoServices();
-			$response = $todoService->updateTodo($request,$id);
-			return response()->json([
-				'message' => $response['message'],
-				'data'    => $response['data']
-			], $response['status']);
-
-		} else {
+		if ($validator->fails()) {
 			return response()->json([
 				'status'  => 422,
 				'message' => 'Validation errors',
 				'data'    => $validator->errors(),
 			], 422);
 		}
+		$todoService = new TodoServices();
+		$response = $todoService->updateTodo($request, $id);
+		return response()->json([
+			'message' => $response['message'],
+			'data'    => $response['data']
+		], $response['status']);
 
 	}
 
@@ -126,20 +119,18 @@ class TodoController extends Controller {
 	 */
 	public function destroy($id) {
 
-		if ($id) {
-
-			$todoService = new TodoServices();
-			$response = $todoService->destroyTodo($id);
-			return response()->json([
-				'message' => $response['message'],
-				'data'    => $response['data']
-			], $response['status']);
-
-		} else {
+		if (!$id) {
 			return response()->json([
 				'status'  => 422,
 				'message' => 'The todo id must be provided',
 			], 422);
 		}
+
+		$todoService = new TodoServices();
+		$response = $todoService->destroyTodo($id);
+		return response()->json([
+			'message' => $response['message'],
+			'data'    => $response['data']
+		], $response['status']);
 	}
 }

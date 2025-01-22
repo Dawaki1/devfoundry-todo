@@ -17,24 +17,22 @@ class AuthController extends Controller
 		    'confirm_password' => 'required|min:8|same:password'
 	    ]);
 
-	    if (!$validator->fails()){
-
-			$authService = new AuthService();
-			$response = $authService->register($request);
-		    // Proceed with registration logic
+	    if ($validator->fails()){
 		    return response()->json([
-			    'message' => $response['message'],
-			    'data' => $response['data']
-		    ], $response['status']);
+			    'status' => 422,
+			    'message' => 'Validation errors',
+			    'data' => $validator->errors(),
+		    ], 422);
 
 	    }
-		else{
-			return response()->json([
-				'status' => 422,
-				'message' => 'Validation errors',
-				'data' => $validator->errors(),
-			], 422);
-		}
+
+		$authService = new AuthService();
+		$response = $authService->register($request);
+	    // Proceed with registration logic
+	    return response()->json([
+		    'message' => $response['message'],
+		    'data' => $response['data']
+	    ], $response['status']);
 
     }
 
@@ -45,24 +43,21 @@ class AuthController extends Controller
 			'password' => 'required|string',
 		]);
 
-		if (!$validator->fails()){
-
-			$authService = new AuthService();
-			$response = $authService->login($request);
-			// Proceed with registration logic
-			return response()->json([
-				'message' => $response['message'],
-				'data' => $response['data']
-			], $response['status']);
-
-		}
-		else{
+		if ($validator->fails()) {
 			return response()->json([
 				'status' => 422,
 				'message' => 'Validation errors',
 				'data' => $validator->errors(),
 			], 422);
 		}
+
+		$authService = new AuthService();
+		$response = $authService->login($request);
+		// Proceed with registration logic
+		return response()->json([
+			'message' => $response['message'],
+			'data' => $response['data']
+		], $response['status']);
 
 	}
 }
